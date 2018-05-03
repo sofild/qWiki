@@ -5,7 +5,7 @@
 	$file = $dir.'/'.$to;
 	if(file_exists($file)){
 		$contents = file_get_contents($file);
-		$datas = explode("#####\n");
+		$datas = explode("\n#####\n", $contents);
 		$title = $datas[1];
 		$attachments = empty($datas[2]) ? [] : json_decode($datas[2], true);
 		$html = $datas[3];
@@ -23,6 +23,9 @@
 	                if(is_dir($dir."/".$file)) {
 	                    $files[$file] = read_dir($dir."/".$file);
 	                } else {
+	                	if(strpos($file, "_")===false){
+	                		continue;
+	                	}
 	                	$names = explode("_", $file);
 	                	$timestamp = $names[0];
 	                    $files[$timestamp] = $file;
@@ -40,7 +43,7 @@
 <head>
 	<meta charset=utf-8>
 	<meta name=viewport content="width=device-width,initial-scale=1">
-	<title>pages</title>
+	<title><?php echo $title; ?></title>
 	<link href=static/css/app.css rel=stylesheet>
 	<script>
 		window.MENU = <?php echo json_encode($menu); ?>;

@@ -2,15 +2,23 @@
 	.mt15{
 		margin-top: 15px;
 	}
+	.ivu-input{
+		height: 50px;
+	}
 </style>
 <template>
 	<div id="editor">
 		<div class="mt15">
-			<Input v-model="path" placeholder="path" style="width: 100%"></Input>
+			<Row>
+				<Col span="8">
+					<Input v-model="path" placeholder="path" style="width: 100%; height:50;"></Input>
+				</Col>
+				<Col span="2"></Col>
+				<Col span="14">
+					<Input v-model="title" placeholder="title" style="width: 100%; height:50; margin-left:20px;"></Input>
+				</Col>
+			</Row>
 		</div>
-		<div class="mt15">
-			<Input v-model="title" placeholder="title" style="width: 100%"></Input>
-		<div>
 		<div class="mt15">
 	        <Upload
 		        multiple="false"

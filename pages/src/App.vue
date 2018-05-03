@@ -40,33 +40,7 @@
             </Header>
             <Layout>
                 <Sider hide-trigger :style="{background: '#fff'}">
-                    <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']">
-                        <Submenu name="1">
-                            <template slot="title">
-                                <Icon type="ios-navigate"></Icon>
-                                Item 1
-                            </template>
-                            <MenuItem name="1-1">Option 1</MenuItem>
-                            <MenuItem name="1-2">Option 2</MenuItem>
-                            <MenuItem name="1-3">Option 3</MenuItem>
-                        </Submenu>
-                        <Submenu name="2">
-                            <template slot="title">
-                                <Icon type="ios-keypad"></Icon>
-                                Item 2
-                            </template>
-                            <MenuItem name="2-1">Option 1</MenuItem>
-                            <MenuItem name="2-2">Option 2</MenuItem>
-                        </Submenu>
-                        <Submenu name="3">
-                            <template slot="title">
-                                <Icon type="ios-analytics"></Icon>
-                                Item 3
-                            </template>
-                            <MenuItem name="3-1">Option 1</MenuItem>
-                            <MenuItem name="3-2">Option 2</MenuItem>
-                        </Submenu>
-                    </Menu>
+                    <Tree :data="data" :render="renderContent"></Tree>
                 </Sider>
                 <Layout :style="{padding: '0 24px 24px'}">
                     <Breadcrumb :style="{margin: '24px 0'}">
@@ -83,7 +57,100 @@
     </div>
 </template>
 <script>
-    export default {
-        
+  export default {
+    name: 'App',
+    components: {
+      
+    },
+    data () {
+        return {
+            
+        }
+    },
+    computed: {
+      data: function() {
+        let datas = []
+        let menus = window.MENU
+        return this.formatMenu(menus, '')
+      }
+    },
+    methods: {
+      formatMenu(menus, pmenu){
+        let data = []
+        for(let k in menus){
+          let obj = {}
+          if(!isNaN(k)){
+            let path = pmenu + '/' + menus[k]
+            obj.title = this.formatTitle(menus[k])
+            obj.render = (h, { root, node, data }) => {
+                            return h('span', {
+                              style: {
+                                display: 'inline-block',
+                                width: '100%'
+                              }
+                            }, [
+                              h('span', [
+                                h('Icon', {
+                                  props: {
+                                    type: 'ios-paper-outline'
+                                  },
+                                  style: {
+                                    marginRight: '8px'
+                                  }
+                                }),
+                                h('Button', {
+                                  props: {
+                                      type: 'text'
+                                  },
+                                  on: {
+                                      click: () => { this.goto(path) }
+                                  }
+                                }, data.title)
+                              ]),
+                            ]);
+                          } 
+            data.push(obj)
+          }
+          else{
+            pmenu = pmenu + '/' + k
+            obj.title = k
+            obj.expand = true
+            obj.render = (h, { root, node, data }) => {
+                return h('span', {
+                  style: {
+                    display: 'inline-block',
+                    width: '100%'
+                  }
+                }, [
+                  h('span', [
+                    h('Icon', {
+                      props: {
+                        type: 'ios-folder-outline'
+                      },
+                      style: {
+                        marginRight: '8px'
+                      }
+                    }),
+                    h('span', data.title)
+                  ]),
+                ]);
+              }
+            obj.children = this.formatMenu(menus[k], pmenu)
+            data.push(obj)
+          }
+        }
+        return data
+      },
+      formatTitle(name) {
+        let names = name.split('_')
+        let name2 = name.replace(names[0]+'_', '')
+        let name3 = name2.replace('.qwk', '')
+        return name3
+      },
+      goto(path) {
+        window.location.href='index.php?to='+encodeURIComponent(path)
+      }
     }
+
+  }
 </script>

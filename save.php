@@ -1,4 +1,5 @@
-<?php 
+<?php
+	header("Content-Type:text/json;Charset=utf-8");
 	$path = $_POST["path"];	
 	$title = $_POST["title"];
 	$content = $_POST["content"];
@@ -11,7 +12,7 @@
     }
     $fileName = time().'_'.$title.'.qwk';
     $file = rtrim($fileDir, '/').'/'.$fileName;
-    $contents = date("Y-m-d H:i:s",time())."#####\n".$title."#####\n".$attachments."#####\n".$content;
+    $contents = date("Y-m-d H:i:s",time())."\n#####\n".$title."\n#####\n".$attachments."\n#####\n".$content;
     $r = file_put_contents($file, $contents);
     $data = [];
     if($r > 0){
@@ -23,4 +24,5 @@
     	$data["err"] = 1;
     	$data["msg"] = "保存失败";
     }
+    echo json_encode($data);
 ?>
