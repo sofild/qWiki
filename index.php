@@ -1,4 +1,6 @@
 <?php
+	session_start();
+	date_default_timezone_set('PRC');
 	$dir = __DIR__."/docs";
 	$menu = read_dir($dir);
 	$to = urldecode($_GET["to"]);
@@ -6,9 +8,9 @@
 	if(file_exists($file)){
 		$contents = file_get_contents($file);
 		$datas = explode("\n#####\n", $contents);
-		$title = $datas[1];
-		$attachments = empty($datas[2]) ? [] : json_decode($datas[2], true);
-		$html = $datas[3];
+		$title = $datas[2];
+		$attachments = empty($datas[3]) ? [] : json_decode($datas[3], true);
+		$html = $datas[4];
 	}
 	else{
 		$title = '未找到该页~';

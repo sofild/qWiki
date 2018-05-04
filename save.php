@@ -1,5 +1,8 @@
 <?php
 	header("Content-Type:text/json;Charset=utf-8");
+	session_start();
+	date_default_timezone_set('PRC');
+	$user = $_SESSION["user"];
 	$path = $_POST["path"];	
 	$title = $_POST["title"];
 	$content = $_POST["content"];
@@ -12,7 +15,7 @@
     }
     $fileName = time().'_'.$title.'.qwk';
     $file = rtrim($fileDir, '/').'/'.$fileName;
-    $contents = date("Y-m-d H:i:s",time())."\n#####\n".$title."\n#####\n".$attachments."\n#####\n".$content;
+    $contents = $user."\n#####\n".date("Y-m-d H:i:s",time())."\n#####\n".$title."\n#####\n".$attachments."\n#####\n".$content;
     $r = file_put_contents($file, $contents);
     $data = [];
     if($r > 0){
