@@ -16,6 +16,11 @@ export default new Router({
       path: '/add',
       name: 'Add',
       component: Add
+    },
+    {
+      path: '/edit',
+      name: 'Add',
+      component: Add
     }
   ]
 })

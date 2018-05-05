@@ -11,7 +11,7 @@
 		<div class="mt15">
 			<Row>
 				<Col span="8">
-					<Input v-model="path" placeholder="path" style="width: 100%; height:50;"></Input>
+					<Input v-model="$store.state.path_selected" placeholder="path" style="width: 100%; height:50;"></Input>
 				</Col>
 				<Col span="2"></Col>
 				<Col span="14">
@@ -20,7 +20,7 @@
 			</Row>
 		</div>
 		<div class="mt15">
-	        <Upload
+	      <Upload
 		        multiple="false"
 		        type="drag"
 		        :on-error="errHandle"
@@ -35,7 +35,7 @@
 		    </Upload>
 	    </div>
 		<div class="mt15">
-        	<mavon-editor style="height: 100%" ref=md @imgAdd="$imgAdd" @save="saveHtml"></mavon-editor>
+        	<mavon-editor style="height: 100%" ref=md @imgAdd="$imgAdd" @save="saveHtml" :value="html"></mavon-editor>
         </div>
     </div>
 </template>
@@ -52,11 +52,28 @@ export default {
   data () {
     return {
       tag: 0,
-      path: '',
       title: '',
       attachments: [],
       default_files: [],
       html: '',
+      edit: 0
+    }
+  },
+  mounted () {
+    if(this.$route.path==='/add'){
+      this.$store.state.path_curent = ["", "新增文档"]
+      this.$store.state.path_selected = '/'
+      this.edit = 0
+    }
+    else{
+      this.$store.state.path_curent = window.PATH
+      let path_selected = window.PATH.slice(0, -1).join('/')
+      this.$store.state.path_selected = (path_selected==='' ? '/' : '') + path_selected 
+      this.title = window.TITLE
+      this.default_files = window.ATTACHMENTS
+      this.attachments = window.ATTACHMENTS
+      this.html = window.HTML.html
+      this.edit = 1
     }
   },
   methods: {
@@ -72,13 +89,12 @@ export default {
            $vm.$img2Url(pos, url);
        })
     },
-	successHandle(response, file, fileList){
-		this.attachments.push(response.file)
-		if(response["err"] > 0){
-			this.$Message.error(response.msg)
-		}
-		console.log(this.attachments)
-	},
+  	successHandle(response, file, fileList){
+  		this.attachments.push(response.file)
+  		if(response["err"] > 0){
+  			this.$Message.error(response.msg)
+  		}
+  	},
     errHandle(err, file, fileList) {
     	this.$Message.error(err);
     },
@@ -89,21 +105,18 @@ export default {
     			index = i
     		}
     	}
-    	console.log(index, file, fileList)
     	if(index!==-1){
     		this.attachments.splice(index, 1)
     	}
-    	console.log(this.attachments)
     },
     saveHtml(data) {
-    	let html = md.render(data)
     	$.ajax({
     		url:'save.php',
     		method: 'post',
     		type: 'json',
-    		data: {path: this.path, title: this.title, content: html, attachments: JSON.stringify(this.attachments)},
-    		success: function(data) {
-    			if(data.err===0){
+    		data: {path: this.$store.state.path_selected, title: this.title, content: data, attachments: JSON.stringify(this.attachments), file: window.CURPATH, edit: this.edit},
+    		success: (data) => {
+    			if(data.err == 0){
     				this.$Message.success(data.msg)
     				window.location.href='index.php?to='+data.to
     			}

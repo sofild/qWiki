@@ -10,8 +10,10 @@ Vue.config.productionTip = false
 Vue.use(iView);
 
 /* eslint-disable no-new */
-export default Login = new Vue({
+let Login = new Vue({
   el: '#app',
   components: { Lf },
   template: '<Lf/>'
 })
+
+export default Login

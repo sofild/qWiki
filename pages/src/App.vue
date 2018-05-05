@@ -14,12 +14,19 @@
     float: left;
     position: relative;
     top: 15px;
-    left: 20px;
+    left: 10px;
+    text-align: center;
+    line-height: 30px;
+    vertical-align: middle;
+    color: #ccc;
 }
 .layout-nav{
-    width: 420px;
+    width: 100px;
     margin: 0 auto;
     margin-right: 20px;
+}
+.layout-nav a{
+  color: #ccc;
 }
 </style>
 <template>
@@ -27,12 +34,12 @@
         <Layout>
             <Header>
                 <Menu mode="horizontal" theme="dark" active-name="1">
-                    <div class="layout-logo"></div>
+                    <div class="layout-logo">qWiKi</div>
                     <div class="layout-nav">
                         <MenuItem name="1">
                           <router-link to="/add">
-                            <Icon type="ios-navigate"></Icon>
-                            新增
+                            <Icon type="edit"></Icon>
+                            写文档
                           </router-link>
                         </MenuItem>
                     </div>
@@ -44,9 +51,10 @@
                 </Sider>
                 <Layout :style="{padding: '0 24px 24px'}">
                     <Breadcrumb :style="{margin: '24px 0'}">
-                        <BreadcrumbItem>Home</BreadcrumbItem>
-                        <BreadcrumbItem>Components</BreadcrumbItem>
-                        <BreadcrumbItem>Layout</BreadcrumbItem>
+                        <BreadcrumbItem v-for="(item,index) in $store.state.path_curent">
+                          {{ item }}
+                          <span v-if="index===($store.state.path_curent.length-1) && $route.path!=='/add' && $route.path!=='/edit'"><a href="javascript:void(0);" @click="edit"><Icon type="compose"></Icon></a></span>
+                        </BreadcrumbItem>
                     </Breadcrumb>
                     <Content :style="{padding: '24px', minHeight: '280px', background: '#fff'}">
                         <router-view></router-view>
@@ -57,6 +65,7 @@
     </div>
 </template>
 <script>
+  import $ from 'jquery'
   export default {
     name: 'App',
     components: {
@@ -64,7 +73,7 @@
     },
     data () {
         return {
-            
+            path: this.$store.state.path_curent
         }
     },
     computed: {
@@ -73,6 +82,9 @@
         let menus = window.MENU
         return this.formatMenu(menus, '')
       }
+    },
+    mounted() {
+      
     },
     methods: {
       formatMenu(menus, pmenu){
@@ -98,7 +110,7 @@
                                     marginRight: '8px'
                                   }
                                 }),
-                                h('Button', {
+                                h('a', {
                                   props: {
                                       type: 'text'
                                   },
@@ -131,7 +143,14 @@
                         marginRight: '8px'
                       }
                     }),
-                    h('span', data.title)
+                    h('a', {
+                      props: {
+                          type: 'text'
+                      },
+                      on: {
+                          click: () => { this.getParent(pmenu) }
+                      }
+                    }, data.title)
                   ]),
                 ]);
               }
@@ -149,6 +168,28 @@
       },
       goto(path) {
         window.location.href='index.php?to='+encodeURIComponent(path)
+      },
+      getParent(path) {
+        if(this.$route.path==='/add'){
+          this.$store.state.path_selected = path
+          return
+        }
+      },
+      edit(){
+        $.ajax({
+          url:'save.php',
+          method: 'post',
+          type: 'json',
+          data: {file: window.CURPATH, action: 'check'},
+          success: (data) => {
+            if(data.err == 0){
+              this.$router.push({ path: '/edit' })
+            }
+            else{
+              this.$Message.error(data.msg)
+            }
+          }
+        })
       }
     }
 
