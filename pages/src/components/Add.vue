@@ -71,7 +71,7 @@ export default {
       this.$store.state.path_selected = (path_selected==='' ? '/' : '') + path_selected 
       this.title = window.TITLE
       this.default_files = window.ATTACHMENTS
-      this.attachments = window.ATTACHMENTS
+      this.attachments = this.formatAttach(window.ATTACHMENTS)
       this.html = window.HTML.html
       this.edit = 1
     }
@@ -90,6 +90,9 @@ export default {
        })
     },
   	successHandle(response, file, fileList){
+      if(response.file){
+        response.file.relname = file.name
+      }
   		this.attachments.push(response.file)
   		if(response["err"] > 0){
   			this.$Message.error(response.msg)
@@ -100,8 +103,8 @@ export default {
     },
     removeFile(file, fileList) {
     	let index = -1
-    	for(let i in fileList){
-    		if(fileList[i]['name']===file['name']){
+    	for(let i in this.attachments){
+    		if(this.attachments[i]['relname']===file['name']){
     			index = i
     		}
     	}
@@ -114,7 +117,7 @@ export default {
     		url:'save.php',
     		method: 'post',
     		type: 'json',
-    		data: {path: this.$store.state.path_selected, title: this.title, content: data, attachments: JSON.stringify(this.attachments), file: window.CURPATH, edit: this.edit},
+    		data: {path: this.$store.state.path_selected, title: this.title, content: data, attachments: JSON.stringify(this.unformatAttach(this.attachments)), file: window.CURPATH, edit: this.edit},
     		success: (data) => {
     			if(data.err == 0){
     				this.$Message.success(data.msg)
@@ -125,7 +128,24 @@ export default {
     			}
     		}
     	})
+    },
+    formatAttach(attachs) {
+      for(let i=0; i<attachs.length; i++){
+        attachs[i]['relname'] = attachs[i]['name']
+      }
+      return attachs
+    },
+    unformatAttach(attachs){
+      let data = []
+      for(let i=0; i<attachs.length; i++){
+        let dat = {}
+        dat.name = attachs[i]['name']
+        dat.url = attachs[i]['url']
+        data.push(dat)
+      }
+      return data
     }
+
   }
 }
 </script>

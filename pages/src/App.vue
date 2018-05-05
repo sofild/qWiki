@@ -114,6 +114,9 @@
                                   props: {
                                       type: 'text'
                                   },
+                                  style: {
+                                    fontSize: '14px'
+                                  },
                                   on: {
                                       click: () => { this.goto(path) }
                                   }
@@ -146,6 +149,9 @@
                     h('a', {
                       props: {
                           type: 'text'
+                      },
+                      style: {
+                        fontSize: '14px'
                       },
                       on: {
                           click: () => { this.getParent(pmenu) }
