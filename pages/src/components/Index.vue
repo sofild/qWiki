@@ -34,14 +34,13 @@ export default {
     html: function() {
       let content = window.HTML.html
       let html = md.render(content)
-      html = html.replace(/(\n\n)+/g,"\n")
       return this.nl2br(html)
     }
   },
   methods: {
     nl2br (str, is_xhtml) {
       var breakTag = (is_xhtml || typeof is_xhtml === 'undefined') ? '<br />' : '<br>';    
-      return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1'+ breakTag +'$2');
+      return (str + '').replace(/([^>\r\n]?)(\r\n\n|\n\n\r|\r\r|\n\n)/g, '$1'+ breakTag +'$2');
     }
   }
 }

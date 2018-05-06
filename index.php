@@ -45,6 +45,9 @@
 	                	if(strpos($file, "_")===false){
 	                		continue;
 	                	}
+	                	if(strpos($file, ".qwk")===false){
+	                		continue;
+	                	}
 	                	$names = explode("_", $file);
 	                	$timestamp = $names[0];
 	                    $files[$timestamp] = $file;
