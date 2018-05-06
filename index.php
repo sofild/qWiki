@@ -9,6 +9,7 @@
 	$menu = read_dir($dir);
 	$path = [];
 	$curpath = '';
+	$to = '/';
 	if(isset($_GET["to"])){
 		$curpath = $_GET["to"];
 		$to = urldecode($_GET["to"]);
