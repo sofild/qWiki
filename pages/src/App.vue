@@ -128,6 +128,7 @@
           }
           else{
             pmenu = pmenu + '/' + k
+            let now_path = pmenu
             obj.title = k
             obj.expand = true
             obj.render = (h, { root, node, data }) => {
@@ -154,7 +155,7 @@
                         fontSize: '14px'
                       },
                       on: {
-                          click: () => { this.getParent(pmenu) }
+                          click: () => { this.getParent(now_path) }
                       }
                     }, data.title)
                   ]),
@@ -176,7 +177,7 @@
         window.location.href='index.php?to='+encodeURIComponent(path)
       },
       getParent(path) {
-        if(this.$route.path==='/add'){
+        if(this.$route.path==='/add' || this.$route.path==='/edit'){
           this.$store.state.path_selected = path
           return
         }

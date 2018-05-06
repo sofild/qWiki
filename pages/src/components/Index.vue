@@ -1,4 +1,5 @@
 <style scoped>
+@import "github-markdown-css/github-markdown.css";
 .attachs {
   margin-top:20px;
 }
@@ -8,7 +9,7 @@
 </style>
 <template>
   <div>
-    <div v-html="html"></div>  
+    <div v-html="html" class="markdown-body"></div>  
     <div class="attachs" v-if="attachments.length > 0">
         <div>附件</div>
         <ul>
@@ -33,6 +34,7 @@ export default {
     html: function() {
       let content = window.HTML.html
       let html = md.render(content)
+      html = html.replace(/(\n\n)+/g,"\n")
       return this.nl2br(html)
     }
   },

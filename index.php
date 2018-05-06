@@ -64,6 +64,7 @@
 	<meta name=viewport content="width=device-width,initial-scale=1">
 	<title><?php echo $title; ?></title>
 	<link href=static/css/app.css rel=stylesheet>
+	<link href=github-markdown.css rel=stylesheet>
 	<script>
 		window.MENU = <?php echo json_encode($menu); ?>;
 		window.TITLE = '<?php echo $title; ?>';
