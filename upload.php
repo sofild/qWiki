@@ -9,6 +9,9 @@
 	];
 	$allows = ['jpg','jpeg','gif','png','bpm','doc','docx','xls','xlsx','ppt','txt','pdf','csv','ppt','sketch','rar','zip'];
 	$file = $_FILES["file"];
+    if($_POST['type']=='image'){
+        $file = $_FILES["image"];
+    }
     if(empty($file)){
     	header('HTTP/1.1 204 No Content');  
     	header("Content-Type:text/json;Charset=utf-8");
@@ -33,7 +36,12 @@
     }
     $saveFileName = time().rand(100,999)."_".$file["name"];
     $saveDir = date("Ymd", time());
-    $uploadDir = __DIR__."/attachments";
+    if($_POST['type']=='image'){
+        $uploadDir = __DIR__."/images";
+    }
+    else{
+        $uploadDir = __DIR__."/attachments";
+    }
     if(!file_exists($uploadDir."/".$saveDir)){
         mkdir($uploadDir."/".$saveDir, 0755, true);
     }

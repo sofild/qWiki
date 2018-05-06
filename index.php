@@ -9,7 +9,7 @@
 	$menu = read_dir($dir);
 	$path = [];
 	$curpath = '';
-	$to = '/';
+	$to = '';
 	if(isset($_GET["to"])){
 		$curpath = $_GET["to"];
 		$to = urldecode($_GET["to"]);
@@ -30,7 +30,7 @@
 		$html = json_encode(["html" => $datas[4]]);
 	}
 	else{
-		$title = '未找到该页~';
+		$title = empty($to) ? '写文档' : '未找到该页~';
 		$attachments = [];
 		$html = json_encode(["html" => '#未找到该页~']);
 	}

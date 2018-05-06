@@ -44,6 +44,7 @@ import { mavonEditor } from 'mavon-editor'
 import { markdownIt as md } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import $ from 'jquery'
+import axios from 'axios'
 export default {
   name: 'Add',
   components: {
@@ -78,16 +79,23 @@ export default {
   },
   methods: {
     $imgAdd(pos, $file) {
-       var formdata = new FormData();
-       formdata.append('image', $file);
-       axios({
-           url: 'upload.php',
-           method: 'post',
-           data: formdata,
-           headers: { 'Content-Type': 'multipart/form-data' },
-       }).then((url) => {
-           $vm.$img2Url(pos, url);
-       })
+      var formdata = new FormData();
+      formdata.append('image', $file);
+      formdata.append('type', 'image');
+      axios({
+        url: 'upload.php',
+        method: 'post',
+        data: formdata,
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }).then((info) => {
+        let data = info.data
+        if(data.err == 0){
+          this.$refs.md.$img2Url(pos, 'images/'+ data.file.url);
+        }
+        else{
+          this.$Message.error(data.msg);
+        }
+      })
     },
   	successHandle(response, file, fileList){
       if(response.file){
@@ -113,6 +121,10 @@ export default {
     	}
     },
     saveHtml(data) {
+      if(this.title==''){
+        this.$Message.error('请填写标题');
+        return false;
+      }
     	$.ajax({
     		url:'save.php',
     		method: 'post',
